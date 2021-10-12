@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using GloboTicket.TicketManagement.Domain.Common;
 
 namespace GloboTicket.TicketManagement.Domain.Entities
@@ -8,6 +9,6 @@ namespace GloboTicket.TicketManagement.Domain.Entities
     {
         public Guid CategoryId { get; set; }
         public string Name { get; set; }
-        public ICollection Events { get; set; }
+        public ICollection<Event> Events { get; set; }
     }
 }
