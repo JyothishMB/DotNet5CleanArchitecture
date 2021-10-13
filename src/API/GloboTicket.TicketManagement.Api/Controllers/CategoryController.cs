@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GloboTicket.TicketManagement.Application.Features.Categories.Commands.CreateCategory;
