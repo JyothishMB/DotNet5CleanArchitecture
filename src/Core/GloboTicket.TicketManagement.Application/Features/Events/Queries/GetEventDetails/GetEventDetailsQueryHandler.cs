@@ -9,7 +9,7 @@ using MediatR;
 
 namespace GloboTicket.TicketManagement.Application.Features.Events.Queries.GetEventDetails
 {
-    public class GetEvenDetailsQueryHandler : IRequestHandler<GetEventDetailsQuery, EventDetailVm>
+    public class GetEvenDetailsQueryHandler : IRequestHandler<GetEventDetailsQuery, GetEventDetailsQueryResponse>
     {
         private readonly IMapper _mapper;
         private readonly IAsyncRepository<Event> _eventRepository;
@@ -24,15 +24,23 @@ namespace GloboTicket.TicketManagement.Application.Features.Events.Queries.GetEv
 
         }
 
-        public async Task<EventDetailVm> Handle(GetEventDetailsQuery request, CancellationToken cancellationToken)
+        public async Task<GetEventDetailsQueryResponse> Handle(GetEventDetailsQuery request, CancellationToken cancellationToken)
         {
+            var response = new GetEventDetailsQueryResponse();
             var @event = await _eventRepository.GetByIdAsync(request.Id);
-            var eventDetailDto = _mapper.Map<EventDetailVm>(@event);
+            if(@event != null)
+            {
+                var eventDetailDto = _mapper.Map<EventDetailVm>(@event);
 
-            var category = await _categoryRepository.GetByIdAsync(@event.CategoryId);
-            eventDetailDto.Category = _mapper.Map<CategoryDto>(category);
+                var category = await _categoryRepository.GetByIdAsync(@event.CategoryId);
+                eventDetailDto.Category = _mapper.Map<CategoryDto>(category);
 
-            return eventDetailDto;
+                response.eventDetailVm = eventDetailDto;
+            }
+            else
+                response.Message = "Event not found";
+                
+            return response;
         }
 
     }
