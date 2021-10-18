@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using GloboTicket.TicketManagement.Application.Contracts.Infrastructure;
 using GloboTicket.TicketManagement.Application.Models.Mail;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -10,9 +11,11 @@ namespace GloboTicket.TicketManagement.Infrastructure.Mail
     public class EmailService : IEmailService
     {
         public EmailSettings _emailSettings { get; }
-        
-        public EmailService(IOptions<EmailSettings> mailSettings)
+        private readonly ILogger<EmailService> _logger;
+
+        public EmailService(IOptions<EmailSettings> mailSettings, ILogger<EmailService> logger)
         {
+            _logger = logger;
             _emailSettings = mailSettings.Value;
         }
 
@@ -33,8 +36,12 @@ namespace GloboTicket.TicketManagement.Infrastructure.Mail
             var sendGridMessage = MailHelper.CreateSingleEmail(from, to, subject, emailBody, emailBody);
             var response = await client.SendEmailAsync(sendGridMessage);
 
+            _logger.LogInformation("Email Sent");
+
             if (response.StatusCode == System.Net.HttpStatusCode.Accepted || response.StatusCode == System.Net.HttpStatusCode.OK)
                 return true;
+
+            _logger.LogInformation("Email Sending failed");
 
             return false;
         }

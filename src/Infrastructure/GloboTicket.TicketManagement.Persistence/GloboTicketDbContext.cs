@@ -203,11 +203,15 @@ namespace GloboTicket.TicketManagement.Persistence
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedDate = DateTime.Now;
-                        entry.Entity.CreatedBy = _loggedInUserService.UserId;
+                        entry.Entity.CreatedBy = _loggedInUserService==null ? "Test" : _loggedInUserService.UserId; 
+                        //#Remove1
+                        //Need to remove the above one line once the identity is implemented
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModifiedDate = DateTime.Now;
-                        entry.Entity.LastModifiedBy = _loggedInUserService.UserId;
+                        entry.Entity.LastModifiedBy = _loggedInUserService == null ? "Test" : _loggedInUserService.UserId;
+                        //#Remove2
+                        //Need to remove the above one line once the identity is implemented
                         break;
                 }
             }
