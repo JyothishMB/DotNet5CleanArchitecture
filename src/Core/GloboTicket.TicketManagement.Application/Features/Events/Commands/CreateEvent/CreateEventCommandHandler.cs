@@ -7,6 +7,7 @@ using GloboTicket.TicketManagement.Application.Contracts.Persistence;
 using GloboTicket.TicketManagement.Application.Models.Mail;
 using GloboTicket.TicketManagement.Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace GloboTicket.TicketManagement.Application.Features.Events.Commands.CreateEvent
 {
@@ -15,15 +16,17 @@ namespace GloboTicket.TicketManagement.Application.Features.Events.Commands.Crea
         private readonly IMapper _mapper;
         private readonly IEventRepository _eventRepository;
         private readonly IEmailService _emailService;
+        private readonly ILogger<CreateEventCommandHandler> _logger;
 
         public CreateEventCommandHandler(IMapper mapper
             , IEventRepository eventRepository
-            , IEmailService emailService)
+            , IEmailService emailService
+            , ILogger<CreateEventCommandHandler> logger)
         {
             _emailService = emailService;
             _mapper = mapper;
             _eventRepository = eventRepository;
-
+            _logger = logger;
         }
         public async Task<Guid> Handle(CreateEventCommand request, CancellationToken cancellationToken)
         {
@@ -50,7 +53,7 @@ namespace GloboTicket.TicketManagement.Application.Features.Events.Commands.Crea
             }
             catch (Exception ex) 
             {
-                
+                _logger.LogError($"Mail sending operation for Event {@event.EventId} failed due to {ex.Message.ToString()}");
             }
 
             return @event.EventId;
