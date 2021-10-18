@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GloboTicket.TicketManagement.Api.Middlewares;
 using GloboTicket.TicketManagement.Application;
 using GloboTicket.TicketManagement.Infrastructure;
 using GloboTicket.TicketManagement.Persistence;
@@ -58,6 +59,8 @@ namespace GloboTicket.TicketManagement.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCustomExceptionHandler();
 
             app.UseCors("Open");
 
